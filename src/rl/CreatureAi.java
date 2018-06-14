@@ -13,4 +13,8 @@ public class CreatureAi {
 
     } //onEnter
 
+    public void onUpdate(){
+
+    } //onUpdate
+
 } //class CreatureAi

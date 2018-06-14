@@ -25,7 +25,9 @@ public class PlayScreen implements Screen {
         createWorld();
 
         CreatureFactory creatureFactory = new CreatureFactory(world);
-        player = creatureFactory.newPlayer();
+        createCreatures(creatureFactory);
+
+
 
     } //PlayScreen
 
@@ -85,6 +87,8 @@ public class PlayScreen implements Screen {
 
         } //switch
 
+        world.update();
+
         return this;
 
     } //respondToUserInput
@@ -115,17 +119,28 @@ public class PlayScreen implements Screen {
                 int wx = x + left;
                 int wy = y + top;
                 terminal.write(world.glyph(wx, wy), x, y, world.color(wx, wy));
+
             } //for y
 
         } //for x
 
+        //populate creatures after creating the world
+        for (Creature creature : world.getCreatures()){
+            if ((creature.x >= left && creature.x < left + screenWidth)
+                    && (creature.y >= top && creature.y < top + screenHeight)){
+                terminal.write(creature.getGlyph(), creature.x - left, creature.y - top, creature.getColor());
+            } //if
+        } //for
+
     } //displayTiles
 
-    //makes sure we never scoll out of bounds
-//    private void scrollBy(int mx, int my){
-//        centerX = Math.max(0, Math.min(centerX + mx, world.getWidth() - 1));
-//        centerY = Math.max(0, Math.min(centerY + my, world.getHeight() - 1));
-//    } //scrollBy
+    //populates world with player and creatures
+    private void createCreatures(CreatureFactory creatureFactory){
+        player = creatureFactory.newPlayer();
 
+        for (int i = 0; i < 8; i++){
+            creatureFactory.newFungus();
+        } //for
+    } //createCreatures
 
 } //class PlayScreen

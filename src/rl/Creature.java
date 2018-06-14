@@ -37,7 +37,34 @@ public class Creature {
     } //dig
 
     public void moveBy(int mx, int my){
-        ai.onEnter(x+mx, y+my, world.tile(x+mx, y+my));
+        Creature other = world.creature(x+mx, y+my);
+
+        if (other == null){
+            ai.onEnter(x+mx, y+my, world.tile(x+mx, y+my));
+        } else {
+            attack(other);
+        } //else
+
+
     } //moveBy
+
+    public void attack(Creature other){
+        world.remove(other);
+    } //attack
+
+    //Lets the creature take their turn
+    public void update(){
+        ai.onUpdate();
+    } //update
+
+    public boolean canEnter(int wx, int wy){
+        if (world.tile(wx, wy).isGround() && world.creature(wx, wy) == null){
+            return true;
+        } else {
+            return false;
+        }
+
+
+    } //canEnter
 
 } //class Creature

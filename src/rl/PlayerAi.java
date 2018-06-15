@@ -1,10 +1,15 @@
 package rl;
 
+import java.util.List;
+
 public class PlayerAi  extends CreatureAi{
 
+    private List<String> messages;
 
-    public PlayerAi(Creature creature) {
+    public PlayerAi(Creature creature, List<String> messages) {
         super(creature);
+        this.messages = messages;
+
     } //PlayerAi
 
     @Override
@@ -17,6 +22,11 @@ public class PlayerAi  extends CreatureAi{
         } //else if
 
     } //onEnter
+
+    @Override
+    public void onNotify(String message) {
+        messages.add(message);
+    } //onNotify
 
 
 } //class PlayerAi

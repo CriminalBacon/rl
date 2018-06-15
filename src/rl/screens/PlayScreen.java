@@ -8,6 +8,8 @@ import rl.World;
 import rl.WorldBuilder;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlayScreen implements Screen {
@@ -17,11 +19,13 @@ public class PlayScreen implements Screen {
     private int screenWidth;
     private int screenHeight;
     private Creature player;
+    private List<String> messages;
 
 
     public PlayScreen() {
         screenWidth = 80;
-        screenHeight = 21;
+        screenHeight = 23;
+        messages = new ArrayList<String>();
         createWorld();
 
         CreatureFactory creatureFactory = new CreatureFactory(world);
@@ -40,6 +44,10 @@ public class PlayScreen implements Screen {
 
         terminal.write(player.getGlyph(), player.x - left, player.y - top, player.getColor());
 
+        String stats = String.format(" %3d/%3d hp", player.getHp(), player.getMaxHp());
+        terminal.write(stats, 1, 23);
+
+        displayMessages(terminal, messages);
 
     } //displayOutput
 
@@ -94,7 +102,7 @@ public class PlayScreen implements Screen {
     } //respondToUserInput
 
     private void createWorld() {
-        world = new WorldBuilder(90, 31)
+        world = new WorldBuilder(90, 32)
                 .makeCaves()
                 .build();
     } //createWorld
@@ -136,11 +144,21 @@ public class PlayScreen implements Screen {
 
     //populates world with player and creatures
     private void createCreatures(CreatureFactory creatureFactory){
-        player = creatureFactory.newPlayer();
+        player = creatureFactory.newPlayer(messages);
 
         for (int i = 0; i < 8; i++){
             creatureFactory.newFungus();
+            creatureFactory.newRat();
         } //for
     } //createCreatures
+
+    private void displayMessages(AsciiPanel terminal, List<String> messages){
+        int top = screenHeight - messages.size();
+        for (int i = 0; i < messages.size(); i++){
+            terminal.writeCenter(messages.get(i), top + i);
+        } //for
+
+        messages.clear();
+    } //displayMessages
 
 } //class PlayScreen

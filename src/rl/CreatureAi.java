@@ -9,7 +9,7 @@ public class CreatureAi {
     } //CreatureAi
 
 
-    public void onEnter(int x, int y, Tile tile){
+    public void onEnter(int x, int y, int z, Tile tile){
 
     } //onEnter
 

@@ -8,6 +8,7 @@ public class Creature {
     // we are specifically not using getters and setters for x and y
     public int x;
     public int y;
+    public int z;
 
     private char glyph;
     private Color color;
@@ -73,23 +74,44 @@ public class Creature {
         this.ai = ai;
     } //setCreatureAi
 
-    public void dig(int wx, int wy){
-        world.dig(wx, wy);
+    public void dig(int wx, int wy, int wz){
+        world.dig(wx, wy, wz);
         doAction("dig a tunnel");
 
     } //dig
 
-    public void moveBy(int mx, int my){
-        Creature other = world.creature(x+mx, y+my);
+    public void moveBy(int mx, int my, int mz){
+        Tile tile = world.tile(x+mx, y+my, z+mz);
+        Creature other = world.creature(x+mx, y+my, z+mz);
+
+        if (mz == -1){
+            if (tile == Tile.STAIRS_DOWN){
+                doAction("walk up the stairs to level %d", z+mz+1);
+            } else {
+                doAction("try to go up but are stopped by the cave ceiling");
+                return;
+            } //else
+
+        } else if (mz ==1){
+            if (tile == Tile.STAIRS_UP){
+                doAction("walk down the stairs to level %d", z+mz+1);
+            } else{
+                doAction("try to go down but are stopped by the cave floor");
+                return;
+            }
+
+        } //else if
+
 
         if (other == null){
-            ai.onEnter(x+mx, y+my, world.tile(x+mx, y+my));
+            ai.onEnter(x+mx, y+my, z+mz, tile);
         } else {
             attack(other);
         } //else
 
 
     } //moveBy
+
 
 
     //the damage is a random number from 1 to the attackers attack value minus the defenders defense
@@ -117,8 +139,8 @@ public class Creature {
         ai.onUpdate();
     } //update
 
-    public boolean canEnter(int wx, int wy){
-        if (world.tile(wx, wy).isGround() && world.creature(wx, wy) == null){
+    public boolean canEnter(int wx, int wy, int mz){
+        if (world.tile(wx, wy, mz).isGround() && world.creature(wx, wy, mz) == null){
             return true;
         } else {
             return false;
@@ -141,7 +163,7 @@ public class Creature {
                     continue;
                 } //if
 
-                Creature other = world.creature(x+ox, y+oy);
+                Creature other = world.creature(x+ox, y+oy, z);
 
                 if (other == null){
                     continue;

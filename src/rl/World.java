@@ -9,16 +9,18 @@ import java.util.List;
 
 public class World {
 
-    private Tile[][] tiles;
+    private Tile[][][] tiles;
     private int width;
     private int height;
+    private int depth;
     private List<Creature> creatures;
 
 
-    public World(Tile[][] tiles){
+    public World(Tile[][][] tiles){
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
+        this.depth = tiles[0][0].length;
         this.creatures = new ArrayList<Creature>();
     } //rl.World
 
@@ -30,53 +32,60 @@ public class World {
         return width;
     } //getWidth
 
+    public int getDepth() {
+        return depth;
+    } //getDepth
+
     public List<Creature> getCreatures(){
         return creatures;
     } //getCreatures
 
-    public Tile tile(int x, int y){
-        if (x < 0 || x >= width || y < 0 || y >= height){
+    public Tile tile(int x, int y, int z){
+        if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= depth){
             return Tile.BOUNDS;
         } else {
-            return tiles[x][y];
+            return tiles[x][y][z];
         } //else
 
     } //tile
 
-    public char glyph(int x, int y){
-        return tile(x,y).getGlyph();
+    public char glyph(int x, int y, int z){
+        return tile(x,y,z).getGlyph();
     } //glyph
 
-    public Color color(int x , int y){
-        return tile(x, y).getColor();
+    public Color color(int x , int y, int z){
+        return tile(x, y, z).getColor();
     } //color
 
-    public void dig(int x, int y){
-        if (tiles[x][y].isDiggable()){
-            tiles[x][y] = Tile.FLOOR;
+    public void dig(int x, int y, int z){
+        if (tiles[x][y][z].isDiggable()){
+            tiles[x][y][z] = Tile.FLOOR;
         } //if
 
     } //dig
 
-    public void addAtEmptyLocation(Creature creature){
+    public void addAtEmptyLocation(Creature creature, int z){
         int x;
         int y;
+
 
         do {
             x = (int)(Math.random() * width);
             y = (int)(Math.random() * height);
-        } while (!tile(x, y).isGround() || creature(x, y) !=null);
+
+        } while (!tile(x, y, z).isGround() || creature(x, y, z) !=null);
 
         creature.x = x;
         creature.y = y;
+        creature.z = z;
         creatures.add(creature);
 
     } //addAtEmptyLocation
 
     //gets creature at specific location
-    public Creature creature(int x, int y){
+    public Creature creature(int x, int y, int z){
         for (Creature creature : creatures){
-            if (creature.x == x && creature.y == y){
+            if (creature.x == x && creature.y == y && creature.z == z){
                 return creature;
             } //if
         }
@@ -99,3 +108,4 @@ public class World {
 
 
 } //class rl.World
+

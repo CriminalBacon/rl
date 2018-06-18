@@ -17,6 +17,8 @@ public class Creature {
     private int hp;
     private int attackValue;
     private int defenseValue;
+    private int visionRadius;
+
 
     public Creature(World world, char glyph, Color color, int maxHp, int attack, int defense){
         this.world = world;
@@ -26,6 +28,7 @@ public class Creature {
         this.hp = maxHp;
         this.attackValue = attack;
         this.defenseValue = defense;
+        visionRadius = 6;
 
     } //Creature
 
@@ -68,6 +71,10 @@ public class Creature {
     public void setDefenseValue(int defenseValue) {
         this.defenseValue = defenseValue;
     } //setDefenseValue
+
+    public int getVisionRadius() {
+        return visionRadius;
+    } //getVisionRadius
 
     //uses setter injection instead of using the constructor
     public void setCreatureAi(CreatureAi ai){
@@ -156,10 +163,10 @@ public class Creature {
 
     //notifies nearby creatures when something happens
     public void doAction(String message, Object ... params){
-        int r = 9;
-        for (int ox = -r; ox < r+1; ox++){
-            for(int oy = -r; oy < r+1; oy++){
-                if (ox*ox + oy*oy > r*r){
+
+        for (int ox = -visionRadius; ox < visionRadius+1; ox++){
+            for(int oy = -visionRadius; oy < visionRadius+1; oy++){
+                if (ox*ox + oy*oy > visionRadius*visionRadius){
                     continue;
                 } //if
 
@@ -171,7 +178,7 @@ public class Creature {
 
                 if (other == this){
                     other.notify("You " + message + ".", params);
-                } else {
+                } else if (other.canSee(x, y, z)){
                     other.notify(String.format("The '%s' %s.", glyph, makeSecondPerson(message)), params);
                 } //else
 
@@ -181,6 +188,18 @@ public class Creature {
         } //for ox
 
     } //doAction
+
+    public boolean canSee(int wx, int wy, int wz){
+        return ai.canSee(wx, wy, wz);
+    } //canSee
+
+    public Tile tile(int wx, int wy, int wz){
+        return world.tile(wx, wy, wz);
+    } //tile
+
+
+
+
 
     //assumes the first word is the verb.  may want to move this in the future since it is grammar
     private String makeSecondPerson(String text){

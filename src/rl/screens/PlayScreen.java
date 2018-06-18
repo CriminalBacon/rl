@@ -2,11 +2,9 @@ package rl.screens;
 
 
 import asciiPanel.AsciiPanel;
-import rl.Creature;
-import rl.CreatureFactory;
-import rl.World;
-import rl.WorldBuilder;
+import rl.*;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,7 @@ public class PlayScreen implements Screen {
     private int screenHeight;
     private Creature player;
     private List<String> messages;
+    private FieldOfView fov;
 
 
     public PlayScreen() {
@@ -27,10 +26,10 @@ public class PlayScreen implements Screen {
         screenHeight = 23;
         messages = new ArrayList<String>();
         createWorld();
+        fov = new FieldOfView(world);
 
         CreatureFactory creatureFactory = new CreatureFactory(world);
         createCreatures(creatureFactory);
-
 
 
     } //PlayScreen
@@ -98,9 +97,9 @@ public class PlayScreen implements Screen {
 
         } //switch
 
-        switch (key.getKeyChar()){
+        switch (key.getKeyChar()) {
             case '<':
-                player.moveBy(0,0, -1);
+                player.moveBy(0, 0, -1);
                 break;
             case '>':
                 player.moveBy(0, 0, 1);
@@ -116,6 +115,7 @@ public class PlayScreen implements Screen {
         world = new WorldBuilder(90, 32, 5)
                 .makeCaves()
                 .build();
+
     } //createWorld
 
 
@@ -131,49 +131,28 @@ public class PlayScreen implements Screen {
 
     } //getScrollY
 
-//    //displays tiles using the left and top to know which section of the world to display
-//    private void displayTiles(AsciiPanel terminal, int left, int top) {
-//        for (int x = 0; x < screenWidth; x++) {
-//            for (int y = 0; y < screenHeight; y++) {
-//
-//                int wx = x + left;
-//                int wy = y + top;
-//
-//                terminal.write(world.glyph(wx, wy, player.z), x, y, world.color(wx, wy, player.z));
-//
-//            } //for y
-//
-//        } //for x
-//
-//        //populate creatures after creating the world
-//        for (Creature creature : world.getCreatures()) {
-//            if ((creature.x >= left && creature.x < left + screenWidth)
-//                    && (creature.y >= top && creature.y < top + screenHeight)) {
-//                terminal.write(creature.getGlyph(), creature.x - left, creature.y - top, creature.getColor());
-//            } //if
-//        } //for
-//
-//    } //displayTiles
 
-
+    //show only the monsters and tiles that can be seen.  Tiles are grey outside the line of sight
     private void displayTiles(AsciiPanel terminal, int left, int top) {
-        for (int x = 0; x < screenWidth; x++){
-            for (int y = 0; y < screenHeight; y++){
+        fov.update(player.x, player.y, player.z, player.getVisionRadius());
+
+        for (int x = 0; x < screenWidth; x++) {
+            for (int y = 0; y < screenHeight; y++) {
                 int wx = x + left;
                 int wy = y + top;
 
-                Creature creature = world.creature(wx, wy, player.z);
-                if (creature != null)
-                    terminal.write(creature.getGlyph(), creature.x - left, creature.y - top, creature.getColor());
-                else
+                if (player.canSee(wx, wy, player.z)) {
                     terminal.write(world.glyph(wx, wy, player.z), x, y, world.color(wx, wy, player.z));
+                } else {
+                    terminal.write(fov.tile(wx, wy, player.z).getGlyph(), x, y, Color.darkGray);
+                } //else
             }
         }
     }
 
     //populates world with player and creatures
-    private void createCreatures(CreatureFactory creatureFactory){
-        player = creatureFactory.newPlayer(messages);
+    private void createCreatures(CreatureFactory creatureFactory) {
+        player = creatureFactory.newPlayer(messages, fov);
 
         for (int z = 0; z < world.getDepth(); z++) {
             for (int i = 0; i < 8; i++) {
@@ -183,9 +162,9 @@ public class PlayScreen implements Screen {
         }
     } //createCreatures
 
-    private void displayMessages(AsciiPanel terminal, List<String> messages){
+    private void displayMessages(AsciiPanel terminal, List<String> messages) {
         int top = screenHeight - messages.size();
-        for (int i = 0; i < messages.size(); i++){
+        for (int i = 0; i < messages.size(); i++) {
             terminal.writeCenter(messages.get(i), top + i);
         } //for
 

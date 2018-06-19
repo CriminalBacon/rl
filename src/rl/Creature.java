@@ -18,6 +18,7 @@ public class Creature {
     private int attackValue;
     private int defenseValue;
     private int visionRadius;
+    private String name;
 
 
     public Creature(World world, char glyph, Color color, int maxHp, int attack, int defense){
@@ -29,6 +30,7 @@ public class Creature {
         this.attackValue = attack;
         this.defenseValue = defense;
         visionRadius = 6;
+
 
     } //Creature
 
@@ -76,6 +78,14 @@ public class Creature {
         return visionRadius;
     } //getVisionRadius
 
+    public String getName() {
+        return name;
+    } //name
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     //uses setter injection instead of using the constructor
     public void setCreatureAi(CreatureAi ai){
         this.ai = ai;
@@ -88,6 +98,10 @@ public class Creature {
     } //dig
 
     public void moveBy(int mx, int my, int mz){
+        if (mx == 0 && my == 0 && mz == 0){
+            return;
+        }
+
         Tile tile = world.tile(x+mx, y+my, z+mz);
         Creature other = world.creature(x+mx, y+my, z+mz);
 
@@ -125,7 +139,7 @@ public class Creature {
     public void attack(Creature other){
         int amount = Math.max(0, attackValue - other.getDefenseValue());
         amount = (int)(Math.random() * amount) + 1;
-        doAction("attack the '%s' for %d damage", other.glyph, amount);
+        doAction("attack the %s for %d damage", other.getName(), amount);
         other.modifyHp(-amount);
 
     } //attack
@@ -179,7 +193,7 @@ public class Creature {
                 if (other == this){
                     other.notify("You " + message + ".", params);
                 } else if (other.canSee(x, y, z)){
-                    other.notify(String.format("The '%s' %s.", glyph, makeSecondPerson(message)), params);
+                    other.notify(String.format("The %s %s.", name, makeSecondPerson(message)), params);
                 } //else
 
             } //for oy
@@ -198,6 +212,16 @@ public class Creature {
     } //tile
 
 
+    public Creature creature(int wx, int wy, int wz){
+        return world.creature(wx, wy, wz);
+    } //creature
+
+
+    public void setPos(int mx, int my, int mz){
+        x = mx;
+        y = my;
+        z = mz;
+    }
 
 
 

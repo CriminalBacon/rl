@@ -9,5 +9,11 @@ public class RatAi extends CreatureAi {
         super(creature);
     } //RatAi
 
+    @Override
+    public void onUpdate() {
+        attackPlayerWithMelee();
+
+    } //onUpdate
+
 
 } //class RatAi

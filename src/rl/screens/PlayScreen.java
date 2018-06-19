@@ -103,6 +103,9 @@ public class PlayScreen implements Screen {
                 break;
             case '>':
                 player.moveBy(0, 0, 1);
+                break;
+            case '.':
+                player.moveBy(0, 0,0);
         } //switch
 
         world.update();
@@ -154,11 +157,27 @@ public class PlayScreen implements Screen {
     private void createCreatures(CreatureFactory creatureFactory) {
         player = creatureFactory.newPlayer(messages, fov);
 
+
+        creatureFactory.newRat(player.z).setPos(player.x + 2, player.y + 2, player.z);
+
+        //fungus generator
         for (int z = 0; z < world.getDepth(); z++) {
             for (int i = 0; i < 8; i++) {
                 creatureFactory.newFungus(z);
-                creatureFactory.newRat(z);
+
             } //for
+
+            //rat generator
+            for (int i = 0; i < 10; i++){
+                creatureFactory.newRat(z);
+            }
+
+
+            //bat generator
+            for (int i = 0; i < 20; i++){
+                creatureFactory.newBat(z);
+            } //for
+
         }
     } //createCreatures
 

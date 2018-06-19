@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class PlayScreen implements Screen {
 
 
@@ -19,17 +20,20 @@ public class PlayScreen implements Screen {
     private Creature player;
     private List<String> messages;
     private FieldOfView fov;
-
+    private Screen subscreen;
+    private List<String> archiveMessages;
+    ;
 
     public PlayScreen() {
         screenWidth = 80;
         screenHeight = 23;
         messages = new ArrayList<String>();
+        archiveMessages = new ArrayList<String>();
         createWorld();
         fov = new FieldOfView(world);
-
-        CreatureFactory creatureFactory = new CreatureFactory(world);
-        createCreatures(creatureFactory);
+        ThingFactory thingFactory = new ThingFactory(world);
+        createCreatures(thingFactory);
+        createItems(thingFactory);
 
 
     } //PlayScreen
@@ -51,64 +55,92 @@ public class PlayScreen implements Screen {
 
         displayMessages(terminal, messages);
 
+        if(subscreen != null){
+            subscreen.displayOutput(terminal);
+        } //if
+
     } //displayOutput
 
     @Override
     public Screen respondToUserInput(KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE:
-                return new LoseScreen();
-            case KeyEvent.VK_ENTER:
-                return new WinScreen();
+        if (subscreen != null){
+            subscreen = subscreen.respondToUserInput(key);
+        } else {
 
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_H:
-                player.moveBy(-1, 0, 0);
-                break;
+            switch (key.getKeyCode()) {
+                case KeyEvent.VK_ESCAPE:
+                    return new LoseScreen();
+                case KeyEvent.VK_ENTER:
+                    return new WinScreen();
 
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_L:
-                player.moveBy(1, 0, 0);
-                break;
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_H:
+                    player.moveBy(-1, 0, 0);
+                    break;
 
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_K:
-                player.moveBy(0, -1, 0);
-                break;
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_L:
+                    player.moveBy(1, 0, 0);
+                    break;
 
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_J:
-                player.moveBy(0, 1, 0);
-                break;
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_K:
+                    player.moveBy(0, -1, 0);
+                    break;
 
-            case KeyEvent.VK_Y:
-                player.moveBy(-1, -1, 0);
-                break;
-            case KeyEvent.VK_U:
-                player.moveBy(1, -1, 0);
-                break;
-            case KeyEvent.VK_B:
-                player.moveBy(-1, 1, 0);
-                break;
-            case KeyEvent.VK_N:
-                player.moveBy(1, 1, 0);
-                break;
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_J:
+                    player.moveBy(0, 1, 0);
+                    break;
 
+                case KeyEvent.VK_Y:
+                    player.moveBy(-1, -1, 0);
+                    break;
+                case KeyEvent.VK_U:
+                    player.moveBy(1, -1, 0);
+                    break;
+                case KeyEvent.VK_B:
+                    player.moveBy(-1, 1, 0);
+                    break;
+                case KeyEvent.VK_N:
+                    player.moveBy(1, 1, 0);
+                    break;
+                case KeyEvent.VK_D:
+                    subscreen = new DropScreen(player);
+                    break;
+                case KeyEvent.VK_M:
+                    subscreen = new MessageScreen(archiveMessages);
 
-        } //switch
+            } //switch
 
-        switch (key.getKeyChar()) {
-            case '<':
-                player.moveBy(0, 0, -1);
-                break;
-            case '>':
-                player.moveBy(0, 0, 1);
-                break;
-            case '.':
-                player.moveBy(0, 0,0);
-        } //switch
+            switch (key.getKeyChar()) {
+                case '<':
+                    if (userIsTryingToEXit()){
+                        return userExits();
+                    } else {
+                        player.moveBy(0, 0, -1);
+                    }
+                    break;
+                case '>':
+                    player.moveBy(0, 0, 1);
+                    break;
+                case '.':
+                    player.moveBy(0, 0, 0);
+                    break;
+                case 'g':
+                    player.pickup();
+                    break;
+            } //switch
 
-        world.update();
+        } //if
+
+        if (subscreen == null) {
+            world.update();
+        } //if
+
+        if (player.getHp() < 1){
+            return new LoseScreen();
+        } //if
 
         return this;
 
@@ -154,28 +186,26 @@ public class PlayScreen implements Screen {
     }
 
     //populates world with player and creatures
-    private void createCreatures(CreatureFactory creatureFactory) {
-        player = creatureFactory.newPlayer(messages, fov);
+    private void createCreatures(ThingFactory thingFactory) {
+        player = thingFactory.newPlayer(messages, fov);
 
-
-        creatureFactory.newRat(player.z).setPos(player.x + 2, player.y + 2, player.z);
-
-        //fungus generator
         for (int z = 0; z < world.getDepth(); z++) {
+
+            //fungus generator
             for (int i = 0; i < 8; i++) {
-                creatureFactory.newFungus(z);
+                thingFactory.newFungus(z);
 
             } //for
 
             //rat generator
             for (int i = 0; i < 10; i++){
-                creatureFactory.newRat(z);
+                thingFactory.newRat(z);
             }
 
 
             //bat generator
             for (int i = 0; i < 20; i++){
-                creatureFactory.newBat(z);
+                thingFactory.newBat(z);
             } //for
 
         }
@@ -187,7 +217,51 @@ public class PlayScreen implements Screen {
             terminal.writeCenter(messages.get(i), top + i);
         } //for
 
+        archiveMessages(messages);
         messages.clear();
     } //displayMessages
+
+    private void createItems(ThingFactory factory){
+        for (int z = 0; z < world.getDepth(); z++){
+
+            // rock factory
+            for (int i = 0; i < world.getWidth() * world.getHeight() / 20; i++){
+                factory.newRock(z);
+            } //for
+        } //for
+
+        factory.newVictoryItem(0);
+
+
+    } //createItems
+
+    private void archiveMessages(List<String> messages){
+        //only keeps 23 messages in archive
+        if (archiveMessages.size() + messages.size() >= 23){
+            for (int i = 0; i <= messages.size(); i++){
+                archiveMessages.remove(i);
+            } //for
+        } //if
+
+        archiveMessages.addAll(messages);
+
+
+    } //archiveMessages
+
+    private boolean userIsTryingToEXit(){
+        return player.z == 0 && world.tile(player.x, player.y, player.z) == Tile.STAIRS_UP;
+    } //userIsTryingToExit
+
+    private Screen userExits(){
+        for (Item item : player.getInventory().getItems()){
+            if (item != null && item.getName().equals("teddy bear")){
+                return new WinScreen();
+            } //if
+
+        }
+        return new LoseScreen();
+    } //userExits
+
+
 
 } //class PlayScreen

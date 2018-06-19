@@ -1,11 +1,9 @@
 package rl;
 
-import java.awt.*;
-
 public class RatAi extends CreatureAi {
 
 
-    public RatAi(Creature creature, CreatureFactory creatureFactory) {
+    public RatAi(Creature creature, ThingFactory thingFactory) {
         super(creature);
     } //RatAi
 

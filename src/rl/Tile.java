@@ -36,4 +36,6 @@ public enum Tile {
         return this != WALL && this != BOUNDS;
     } //isGround
 
+    public boolean isStairs() {return this == Tile.STAIRS_UP || this == Tile.STAIRS_DOWN;
+    }
 } //enum rl.Tile

@@ -19,6 +19,7 @@ public class Creature {
     private int defenseValue;
     private int visionRadius;
     private String name;
+    private Inventory inventory;
 
 
     public Creature(World world, char glyph, Color color, int maxHp, int attack, int defense){
@@ -30,7 +31,7 @@ public class Creature {
         this.attackValue = attack;
         this.defenseValue = defense;
         visionRadius = 6;
-
+        this.inventory = new Inventory(10);
 
     } //Creature
 
@@ -84,6 +85,10 @@ public class Creature {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     //uses setter injection instead of using the constructor
@@ -217,11 +222,34 @@ public class Creature {
     } //creature
 
 
-    public void setPos(int mx, int my, int mz){
-        x = mx;
-        y = my;
-        z = mz;
-    }
+    public void pickup(){
+        Item item = world.item(x, y, z);
+
+        if (item == null) {
+            doAction("grab at the ground");
+        } else if (inventory.isFull()) {
+            doAction("inventory is full");
+        } else {
+            doAction("pickup a %s", item.getName());
+            world.remove(x, y, z);
+            inventory.add(item);
+        } //else
+
+    } //pickup
+
+
+    public void drop(Item item){
+        if (world.addAtEmptySpace(item, x, y , z)) {
+            doAction("drop a " + item.getName());
+            inventory.remove(item);
+        } else {
+            notify("There is nowhere to drop the %s.", item.getName());
+        } //else
+
+    } //drop
+
+
+
 
 
 

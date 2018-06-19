@@ -6,12 +6,12 @@ import rl.screens.BatAi;
 
 import java.util.List;
 
-public class CreatureFactory {
+public class ThingFactory {
     private World world;
 
-    public CreatureFactory(World world){
+    public ThingFactory(World world){
         this.world = world;
-    } //CreatureFactory
+    } //ThingFactory
 
 
     public Creature newPlayer(List<String> messages, FieldOfView fov){
@@ -21,6 +21,8 @@ public class CreatureFactory {
         return player;
 
     } //newPlayer
+
+    ///////////////////////////// CREATURES /////////////////////////////
 
     public Creature newFungus(int depth){
         Creature fungus = new Creature(world, 'f', AsciiPanel.green, 10, 0, 0);
@@ -48,4 +50,19 @@ public class CreatureFactory {
     } //newBat
 
 
-} // class CreatureFactory
+    ///////////////////////////// ITEMS /////////////////////////////
+
+    public Item newRock(int depth){
+        Item rock = new Item(',', AsciiPanel.yellow, "rock");
+        world.addAtEmptyLocation(rock, depth);
+        return rock;
+    }  //newRock
+
+    public Item newVictoryItem(int depth){
+        Item item = new Item('*', AsciiPanel.brightWhite, "teddy bear");
+        world.addAtEmptyLocation(item, depth);
+        return item;
+    } //newVictoryItem
+
+
+} // class ThingFactory

@@ -34,6 +34,7 @@ public class CreatureAi {
     } //onNotify
 
     public boolean canSee(int wx, int wy, int wz) {
+
         if (creature.z != wz) {
             return false;
         } //if

@@ -33,6 +33,9 @@ public class PlayerAi  extends CreatureAi{
 
     @Override
     public boolean canSee(int wx, int wy, int wz) {
+        if (creature.isGod()){
+            return true;
+        }
         return fov.isVisible(wx, wy, wz);
     } //canSee
 

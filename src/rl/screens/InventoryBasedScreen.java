@@ -26,14 +26,16 @@ public abstract class InventoryBasedScreen implements Screen{
 
 
     public void displayOutput(AsciiPanel terminal){
-        ArrayList<String> lines = getList();
+        ArrayList<String> lines = MessageUtils.padMessages(getList());
 
-        int y = 23 - lines.size();
+        int y = 22 - lines.size();
         int x = 4;
 
         if (lines.size() > 0){
             terminal.clear(' ', x, y, 20, lines.size());
         } //if
+
+        terminal.write(MessageUtils.createBoarder(lines), x, y++);
 
         for (String line : lines){
             terminal.write(line, x, y++);

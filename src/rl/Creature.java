@@ -20,7 +20,7 @@ public class Creature {
     private int visionRadius;
     private String name;
     private Inventory inventory;
-
+    private boolean god;
 
     public Creature(World world, char glyph, Color color, int maxHp, int attack, int defense){
         this.world = world;
@@ -32,7 +32,7 @@ public class Creature {
         this.defenseValue = defense;
         visionRadius = 6;
         this.inventory = new Inventory(10);
-
+        this.god = false;
     } //Creature
 
     public char getGlyph() {
@@ -89,6 +89,14 @@ public class Creature {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public boolean isGod() {
+        return god;
+    }
+
+    public void setGod(boolean god) {
+        this.god = god;
     }
 
     //uses setter injection instead of using the constructor

@@ -110,7 +110,9 @@ public class PlayScreen implements Screen {
                     break;
                 case KeyEvent.VK_M:
                     subscreen = new MessageScreen(archiveMessages);
-
+                    break;
+                case KeyEvent.VK_0:
+                    player.setGod(!player.isGod());
             } //switch
 
             switch (key.getKeyChar()) {
@@ -188,6 +190,7 @@ public class PlayScreen implements Screen {
     //populates world with player and creatures
     private void createCreatures(ThingFactory thingFactory) {
         player = thingFactory.newPlayer(messages, fov);
+
 
         for (int z = 0; z < world.getDepth(); z++) {
 

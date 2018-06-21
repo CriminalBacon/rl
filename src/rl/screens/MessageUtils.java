@@ -30,9 +30,9 @@ public class MessageUtils {
         return (char)179 + " " + message + " " + padding + (char)179;
     } //addPadding
 
-    public static List<String> padMessages(List<String> messages){
+    public static ArrayList<String> padMessages(List<String> messages){
         int maxLength = getLongestMessageSize(messages);
-        List<String> paddedMessages = new ArrayList<String>();
+        ArrayList<String> paddedMessages = new ArrayList<String>();
         for (String message : messages){
             paddedMessages.add(addPadding(message, maxLength));
         }

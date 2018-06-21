@@ -65,6 +65,7 @@ public class FieldOfView {
     } //getTiles
 
     public boolean isVisible(int x, int y, int z){
+
         return z == depth && x >= 0 && y>= 0 && x < visible.length && y < visible[0].length && visible[x][y];
     } //isVisible
 

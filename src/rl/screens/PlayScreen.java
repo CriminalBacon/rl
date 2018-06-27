@@ -47,7 +47,7 @@ public class PlayScreen implements Screen {
 
         terminal.write(player.getGlyph(), player.x - left, player.y - top, player.getColor());
 
-        String stats = String.format(" %3d/%3d hp", player.getHp(), player.getMaxHp());
+        String stats = String.format(" %3d/%3d hp %8s", player.getHp(), player.getMaxHp(), hunger());
         terminal.write(stats, 1, 23);
 
         String pos = String.format(" %2d, %2d, %2d", player.x, player.y, player.z);
@@ -111,8 +111,12 @@ public class PlayScreen implements Screen {
                 case KeyEvent.VK_M:
                     subscreen = new MessageScreen(archiveMessages);
                     break;
+                case KeyEvent.VK_E:
+                    subscreen = new EatScreen(player);
+                    break;
                 case KeyEvent.VK_0:
                     player.setGod(!player.isGod());
+                    break;
             } //switch
 
             switch (key.getKeyChar()) {
@@ -265,6 +269,20 @@ public class PlayScreen implements Screen {
         return new LoseScreen();
     } //userExits
 
+    private String hunger(){
+        if(player.getFood() < player.getMaxFood() * 0.1){
+            return "Starving";
+        } else if (player.getFood() < player.getMaxFood() * 0.2){
+            return "Hungry";
+        } else if (player.getFood() < player.getMaxFood() * 0.9){
+            return "Stuffed";
+        } else if (player.getFood() < player.getMaxFood() * 0.8) {
+            return "Full";
+        } else {
+            return "";
+        }
+
+    } //hunger
 
 
 } //class PlayScreen

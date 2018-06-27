@@ -20,6 +20,9 @@ public class Creature {
     private int visionRadius;
     private String name;
     private Inventory inventory;
+    private int maxFood;
+    private int food;
+
     private boolean god;
 
     public Creature(World world, char glyph, Color color, int maxHp, int attack, int defense){
@@ -32,6 +35,9 @@ public class Creature {
         this.defenseValue = defense;
         visionRadius = 6;
         this.inventory = new Inventory(10);
+        this.maxFood = 1000;
+        this.food = maxFood / 3 * 2;
+
         this.god = false;
     } //Creature
 
@@ -91,9 +97,17 @@ public class Creature {
         return inventory;
     }
 
+    public int getMaxFood() {
+        return maxFood;
+    } //getMaxFood
+
+    public int getFood() {
+        return food;
+    } //getFood
+
     public boolean isGod() {
         return god;
-    }
+    } //isGod
 
     public void setGod(boolean god) {
         this.god = god;
@@ -105,6 +119,7 @@ public class Creature {
     } //setCreatureAi
 
     public void dig(int wx, int wy, int wz){
+        modifyFood(-10);
         world.dig(wx, wy, wz);
         doAction("dig a tunnel");
 
@@ -162,6 +177,7 @@ public class Creature {
 
         if (hp < 1){
             doAction("die");
+            leaveCorpse();
             world.remove(this);
         }
 
@@ -170,6 +186,7 @@ public class Creature {
 
     //Lets the creature take their turn
     public void update(){
+        modifyFood(-1);
         ai.onUpdate();
     } //update
 
@@ -257,9 +274,31 @@ public class Creature {
     } //drop
 
 
+    private void leaveCorpse(){
+        Item corpse = new Item('%', color, name + " corpse");
+        corpse.modifyFoodValue(maxHp * 3);
+        world.addAtEmptySpace(corpse, x, y, z);
 
+    } //leaveCorpse
 
+    public void modifyFood(int amount){
+        food += amount;
+        if (food > maxFood){
+            food = maxFood;
+        } else if (food < 1 && isPlayer()){
+            modifyHp(-1000);
+        } //else
 
+    } //modifyFood
+
+    public boolean isPlayer(){
+        return glyph == '@';
+    } //isPlayer
+
+    public void eat(Item item){
+        modifyFood(item.getFoodValue());
+        inventory.remove(item);
+    } //eat
 
     //assumes the first word is the verb.  may want to move this in the future since it is grammar
     private String makeSecondPerson(String text){

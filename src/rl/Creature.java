@@ -22,6 +22,8 @@ public class Creature {
     private Inventory inventory;
     private int maxFood;
     private int food;
+    private Item weapon;
+    private Item armor;
 
     private boolean god;
 
@@ -66,7 +68,7 @@ public class Creature {
     } //setHp
 
     public int getAttackValue() {
-        return attackValue;
+        return attackValue + (weapon == null ? 0 : weapon.getAttackValue());
     } //getAttackValue
 
     public void setAttackValue(int attackValue) {
@@ -78,7 +80,7 @@ public class Creature {
     } //getDefenseValue
 
     public void setDefenseValue(int defenseValue) {
-        this.defenseValue = defenseValue;
+        this.defenseValue = defenseValue + (armor == null ? 0 : weapon.getDefenseValue());
     } //setDefenseValue
 
     public int getVisionRadius() {
@@ -104,6 +106,14 @@ public class Creature {
     public int getFood() {
         return food;
     } //getFood
+
+    public Item getWeapon() {
+        return weapon;
+    } //getWeapon
+
+    public Item getArmor() {
+        return armor;
+    } //getArmor
 
     public boolean isGod() {
         return god;
@@ -267,6 +277,7 @@ public class Creature {
         if (world.addAtEmptySpace(item, x, y , z)) {
             doAction("drop a " + item.getName());
             inventory.remove(item);
+            unequip(item);
         } else {
             notify("There is nowhere to drop the %s.", item.getName());
         } //else
@@ -295,10 +306,51 @@ public class Creature {
         return glyph == '@';
     } //isPlayer
 
+
     public void eat(Item item){
+        if (item.getFoodValue() < 0){
+            notify("Gross!");
+        }
+
         modifyFood(item.getFoodValue());
         inventory.remove(item);
+        unequip(item);
     } //eat
+
+
+    public void unequip(Item item){
+        if (item == null){
+            return;
+        }
+
+        if (item == armor){
+            doAction("remove a " + item.getName());
+            armor = null;
+        } else if (item == weapon){
+            doAction("put away a " + item.getName());
+            weapon = null;
+        } //if
+
+    } //unequip
+
+    public void equip(Item item){
+        if (item.getAttackValue() == 0 && item.getDefenseValue() ==0){
+            return;
+        }
+
+        if (item.getAttackValue() >= item.getDefenseValue()){
+            unequip(weapon);
+            doAction("wield a " + item.getName());
+            weapon = item;
+        } else {
+            unequip(armor);
+            doAction("put on a " + item.getName());
+            armor = item;
+        } //else
+
+
+    } //equip
+
 
     //assumes the first word is the verb.  may want to move this in the future since it is grammar
     private String makeSecondPerson(String text){

@@ -8,6 +8,8 @@ public class Item {
     private Color color;
     private String name;
     private int foodValue;
+    private int attackValue;
+    private int defenseValue;
 
     public Item(char glyph, Color color, String name){
         this.glyph = glyph;
@@ -35,5 +37,21 @@ public class Item {
     public void modifyFoodValue(int amount){
         foodValue += amount;
     }
+
+    public int getAttackValue() {
+        return attackValue;
+    } //getAttachValue
+
+    public void modifyAttackValue(int amount) {
+        this.attackValue += amount;
+    } //modifyAttackValue;
+
+    public int getDefenseValue() {
+        return defenseValue;
+    } //getDefenseValue
+
+    public void modifyDefenseValue(int amount) {
+        this.defenseValue += amount;
+    } //modifyDefenseValue
 
 } //Item class

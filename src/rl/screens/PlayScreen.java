@@ -114,6 +114,9 @@ public class PlayScreen implements Screen {
                 case KeyEvent.VK_E:
                     subscreen = new EatScreen(player);
                     break;
+                case KeyEvent.VK_W:
+                    subscreen = new EquipScreen(player);
+                    break;
                 case KeyEvent.VK_0:
                     player.setGod(!player.isGod());
                     break;
@@ -235,6 +238,17 @@ public class PlayScreen implements Screen {
             for (int i = 0; i < world.getWidth() * world.getHeight() / 20; i++){
                 factory.newRock(z);
             } //for
+
+            //weapons factory
+            for (int i = 0; i < 2; i++){
+                factory.randomWeapon(z);
+            } //for
+
+            //armor factory
+            for (int i = 0; i < 2; i++){
+                factory.randomArmor(z);
+            }
+
         } //for
 
         factory.newVictoryItem(0);

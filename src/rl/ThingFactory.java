@@ -64,5 +64,82 @@ public class ThingFactory {
         return item;
     } //newVictoryItem
 
+    public Item newDagger(int depth){
+        Item item = new Item(')', AsciiPanel.white, "dagger");
+        item.modifyAttackValue(5);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+
+    } //newDagger
+
+    public Item newSword(int depth){
+        Item item = new Item(')', AsciiPanel.white, "sword");
+        item.modifyAttackValue(10);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+
+    } //newSword
+
+    public Item newStaff(int depth){
+        Item item = new Item(')', AsciiPanel.white, "staff");
+        item.modifyAttackValue(5);
+        item.modifyDefenseValue(3);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+
+    } //newStaff
+
+    public Item newLightArmor(int depth){
+        Item item = new Item('[', AsciiPanel.green, "tunic");
+        item.modifyDefenseValue(2);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+    } //newLightArmor
+
+    public Item newMediumArmor(int depth){
+        Item item = new Item('[', AsciiPanel.green, "chainmail");
+        item.modifyDefenseValue(4);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+
+    } //newMediumArmor
+
+    public Item newHeavyArmor(int depth){
+        Item item = new Item('[', AsciiPanel.green, "platemail");
+        item.modifyDefenseValue(6);
+        world.addAtEmptyLocation(item, depth);
+        return item;
+
+    } //newHeavyArmor
+
+    public Item randomWeapon(int depth) {
+        switch ((int) (Math.random() * 3)) {
+            case 0:
+                return newDagger(depth);
+            case 1:
+                return newSword(depth);
+            default:
+                return newStaff(depth);
+        } //switch
+
+    } //randomWeapon
+
+    public Item randomArmor(int depth){
+        switch ((int) (Math.random() * 3)) {
+            case 0:
+                return newLightArmor(depth);
+            case 1:
+                return newSword(depth);
+            default:
+                return newHeavyArmor(depth);
+        } //switch
+
+
+    } //randomArmor
+
+
+
+
+
 
 } // class ThingFactory

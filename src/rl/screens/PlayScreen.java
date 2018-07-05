@@ -117,6 +117,10 @@ public class PlayScreen implements Screen {
                 case KeyEvent.VK_W:
                     subscreen = new EquipScreen(player);
                     break;
+                case KeyEvent.VK_X:
+                    player.lookInDirection("up");
+                    subscreen = new LookScreen(player, world);
+                    break;
                 case KeyEvent.VK_0:
                     player.setGod(!player.isGod());
                     break;

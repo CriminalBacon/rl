@@ -1,4 +1,4 @@
-package rl.screens;
+package rl;
 
 
 import rl.Creature;

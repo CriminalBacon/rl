@@ -1,6 +1,8 @@
 package rl;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Creature {
     private World world;
@@ -114,6 +116,7 @@ public class Creature {
     public Item getArmor() {
         return armor;
     } //getArmor
+
 
     public boolean isGod() {
         return god;
@@ -350,6 +353,35 @@ public class Creature {
 
 
     } //equip
+
+
+    // returns the points the player can see in a certain direction.
+    // currently only used for the player
+    public List<Point> lookInDirection(String dir){
+
+        int vision = getVisionRadius();
+
+        switch (dir){
+            case "down":
+                Line linedown = new Line(x, y, x, y + vision);
+                return linedown.getPoints();
+            case "up":
+                Line lineup = new Line(x, y, x, Math.abs(y - vision));
+                return lineup.getPoints();
+            case "right":
+                Line lineRight = new Line(x, y, x + vision, y);
+                return lineRight.getPoints();
+            case "left":
+                Line lineLeft = new Line(x, y, Math.abs(x - vision), y);
+                return lineLeft.getPoints();
+            default:
+                return null;
+
+        } //switch
+
+
+
+    } //lookInDirection
 
 
     //assumes the first word is the verb.  may want to move this in the future since it is grammar

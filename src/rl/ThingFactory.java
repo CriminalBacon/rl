@@ -2,7 +2,6 @@ package rl;
 
 
 import asciiPanel.AsciiPanel;
-import rl.screens.BatAi;
 
 import java.util.List;
 

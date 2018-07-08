@@ -222,6 +222,11 @@ public class PlayScreen implements Screen {
                 thingFactory.newBat(z);
             } //for
 
+            //zombie generator
+            for (int i = 0; i < z + 3; i++){
+                thingFactory.newZombie(z, player);
+            }
+
         }
     } //createCreatures
 

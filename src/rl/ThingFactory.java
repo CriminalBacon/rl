@@ -48,6 +48,14 @@ public class ThingFactory {
         return bat;
     } //newBat
 
+    public Creature newZombie(int depth, Creature player){
+        Creature zombie = new Creature(world, 'z', AsciiPanel.white, 50, 10, 10);
+        zombie.setName("zombie");
+        world.addAtEmptyLocation(zombie, depth);
+        new ZombieAi(zombie, player);
+        return zombie;
+    } //newZombie
+
 
     ///////////////////////////// ITEMS /////////////////////////////
 

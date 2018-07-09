@@ -2,6 +2,7 @@ package rl;
 
 
 import asciiPanel.AsciiPanel;
+import rl.Creature.*;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package rl.screens;
 
-import rl.Creature;
+import rl.Creature.Creature;
 import rl.Item;
 
 public class EquipScreen extends InventoryBasedScreen{

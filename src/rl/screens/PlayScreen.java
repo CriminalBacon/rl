@@ -3,6 +3,7 @@ package rl.screens;
 
 import asciiPanel.AsciiPanel;
 import rl.*;
+import rl.Creature.Creature;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -47,11 +48,11 @@ public class PlayScreen implements Screen {
 
         terminal.write(player.getGlyph(), player.x - left, player.y - top, player.getColor());
 
-        String stats = String.format(" %3d/%3d hp %8s", player.getHp(), player.getMaxHp(), hunger());
+        String stats = String.format(" %3d/%3d hp %8s level: %2d", player.getHp(), player.getMaxHp(), hunger(), player.getLevel());
         terminal.write(stats, 1, 23);
 
-        String pos = String.format(" %2d, %2d, %2d", player.x, player.y, player.z);
-        terminal.write(pos, 40, 23);
+        //String pos = String.format(" %2d, %2d, %2d", player.x, player.y, player.z);
+        //terminal.write(pos, 40, 23);
 
         displayMessages(terminal, messages);
 
@@ -63,6 +64,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public Screen respondToUserInput(KeyEvent key) {
+        int level = player.getLevel();
+
         if (subscreen != null){
             subscreen = subscreen.respondToUserInput(key);
         } else {
@@ -146,6 +149,11 @@ public class PlayScreen implements Screen {
             } //switch
 
         } //if
+
+        //if player levels up, show level up screen
+        if (player.getLevel() > level){
+            subscreen = new LevelUpScreen(player, player.getLevel() - level);
+        }
 
         if (subscreen == null) {
             world.update();

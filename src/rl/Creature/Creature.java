@@ -1,7 +1,8 @@
-package rl;
+package rl.Creature;
+
+import rl.*;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Creature {
@@ -26,6 +27,8 @@ public class Creature {
     private int food;
     private Item weapon;
     private Item armor;
+    private int xp;
+    private int level;
 
     private boolean god;
 
@@ -41,6 +44,7 @@ public class Creature {
         this.inventory = new Inventory(10);
         this.maxFood = 1000;
         this.food = maxFood / 3 * 2;
+        this.level = 1;
 
         this.god = false;
     } //Creature
@@ -117,6 +121,13 @@ public class Creature {
         return armor;
     } //getArmor
 
+    public int getXp() {
+        return xp;
+    } //getXp
+
+    public int getLevel() {
+        return level;
+    } //getLevel
 
     public boolean isGod() {
         return god;
@@ -182,6 +193,9 @@ public class Creature {
         amount = (int)(Math.random() * amount) + 1;
         doAction("attack the %s for %d damage", other.getName(), amount);
         other.modifyHp(-amount);
+        if ((other.hp) < 1){
+            gainXp(other);
+        }
 
     } //attack
 
@@ -357,7 +371,7 @@ public class Creature {
 
     // returns the points the player can see in a certain direction.
     // currently only used for the player
-    public List<Point> lookInDirection(String dir){
+    public List<rl.Point> lookInDirection(String dir){
 
         int vision = getVisionRadius();
 
@@ -379,10 +393,59 @@ public class Creature {
 
         } //switch
 
-
-
     } //lookInDirection
 
+    // when player levels, the hp is set to max hp
+    public void modifyXp(int amount){
+        xp += amount;
+
+        notify("You %s %d xp.", amount < 0 ? "lose" : "gain", amount);
+
+        while(xp > (int)(Math.pow(level, 1.5) * 20)){
+            level++;
+            doAction("advance to level %d", level);
+            ai.onGainLevel();
+            hp = maxHp;
+        } //while
+
+    } //modifyXp
+
+    //by subtracting the killers level, tougher creatures are worth more xp and easy creatures are worth no xp
+    public void gainXp(Creature other){
+        int amount = other.maxHp
+                + other.getAttackValue()
+                + other.getDefenseValue()
+                - level * 2;
+
+        if (amount > 0){
+            modifyXp(amount);
+        } //if
+
+    } //gainXp
+
+    public void gainMaxHp(){
+        maxHp += 10;
+        hp = maxHp;
+        doAction("looks healthier");
+
+    } //gainMaxHp
+
+    public void gainAttackValue(){
+        attackValue += 2;
+        doAction("look stronger");
+
+    } //gainAttackValue
+
+    public void gainDefenseValue(){
+        defenseValue += 2;
+        doAction("look tougher");
+
+    } //gainDefenseValue
+
+    public void gainVision(){
+        visionRadius += 1;
+        doAction("look more aware");
+    }
 
     //assumes the first word is the verb.  may want to move this in the future since it is grammar
     private String makeSecondPerson(String text){

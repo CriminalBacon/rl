@@ -1,8 +1,13 @@
-package rl;
+package rl.Creature;
+
+import rl.Creature.Creature;
+import rl.Creature.CreatureAi;
+import rl.FieldOfView;
+import rl.Tile;
 
 import java.util.List;
 
-public class PlayerAi  extends CreatureAi{
+public class PlayerAi  extends CreatureAi {
 
     private List<String> messages;
     private FieldOfView fov;
@@ -39,4 +44,8 @@ public class PlayerAi  extends CreatureAi{
         return fov.isVisible(wx, wy, wz);
     } //canSee
 
+    @Override
+    public void onGainLevel() {
+
+    }
 } //class PlayerAi

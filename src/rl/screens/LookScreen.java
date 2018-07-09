@@ -2,6 +2,7 @@ package rl.screens;
 
 import asciiPanel.AsciiPanel;
 import rl.*;
+import rl.Creature.Creature;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

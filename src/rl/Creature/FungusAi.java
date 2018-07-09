@@ -1,4 +1,8 @@
-package rl;
+package rl.Creature;
+
+import rl.Creature.Creature;
+import rl.Creature.CreatureAi;
+import rl.ThingFactory;
 
 public class FungusAi extends CreatureAi {
     private ThingFactory factory;

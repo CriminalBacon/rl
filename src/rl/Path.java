@@ -1,5 +1,7 @@
 package rl;
 
+import rl.Creature.Creature;
+
 import java.util.List;
 
 public class Path {

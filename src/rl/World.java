@@ -1,6 +1,6 @@
 package rl;
 
-import rl.Tile;
+import rl.Creature.Creature;
 
 import java.awt.Color;
 import java.util.ArrayList;

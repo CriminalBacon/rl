@@ -1,7 +1,7 @@
 package rl.screens;
 
 import asciiPanel.AsciiPanel;
-import rl.Creature;
+import rl.Creature.Creature;
 import rl.Item;
 
 import java.awt.event.KeyEvent;

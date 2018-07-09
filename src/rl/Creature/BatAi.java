@@ -1,8 +1,5 @@
-package rl;
+package rl.Creature;
 
-
-import rl.Creature;
-import rl.CreatureAi;
 
 public class BatAi extends CreatureAi {
 

@@ -1,4 +1,9 @@
-package rl;
+package rl.Creature;
+
+import rl.Creature.Creature;
+import rl.Line;
+import rl.Point;
+import rl.Tile;
 
 import java.util.ArrayList;
 
@@ -119,5 +124,7 @@ public class CreatureAi {
     } //moveTowards
 
 
-
+    public void onGainLevel() {
+        new LevelUpController().autoLevelUp(creature);
+    }
 } //class CreatureAi

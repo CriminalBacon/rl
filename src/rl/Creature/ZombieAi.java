@@ -1,4 +1,9 @@
-package rl;
+package rl.Creature;
+
+import rl.Creature.Creature;
+import rl.Creature.CreatureAi;
+import rl.Path;
+import rl.Point;
 
 import java.util.List;
 
